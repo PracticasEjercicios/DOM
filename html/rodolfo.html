@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="../css/rodolfo.css">
+</head>
+<body>
+
+	<script type="text/javascript">
+
+//=========================================================================
+//----> Funciones y Body
+
+		// Esta funcion siempre se usara cuando se quiera poner un elemento en el body
+		const ponerEnBody = hijo => body.appendChild(hijo);
+
+		// Cada que se tenga que crear un elemento se llama esta funcion
+		const crearHijo = etiqueta => document.createElement(etiqueta);
+
+		// Crea un elemento BR y lo pone directo en el body
+		const ponerBr = () => ponerEnBody(crearHijo('br'));
+
+		// Para poner HR tmbn se ponen BRs antes y despues
+		const ponerHr = () => {
+			ponerBr();
+			ponerEnBody(crearHijo('hr'));
+			ponerBr();
+		};
+
+		// Esta funcion se usa para poner los H1 al H6 de requerirse
+		const haches = (tipo, texto) => {
+			let elemento = crearHijo(tipo);
+			elemento.innerHTML = texto;
+			ponerEnBody(elemento);
+		};
+
+		// Se usa para poner las listas UL y OL
+		const listas = tipo => {
+			let lista = crearHijo(tipo);
+
+			// Este for se itera 3 veces para poner 3 puntos
+			for (let i=0; i<3; i++) {
+				let li = crearHijo('li');
+				li.innerHTML = 'Tarea';
+				lista.appendChild(li);
+			}
+
+			ponerEnBody(lista);
+		};
+
+		// Para poner imagenes
+		const imagenes = link => {
+			let imagen = crearHijo('img');
+			imagen.setAttribute('src', link);
+			ponerEnBody(imagen);
+		};
+
+		// Se utiliza para los a href
+		const anclas = (texto, link, target = 0) => {
+			let ancla = crearHijo('a');
+			ancla.setAttribute('href', link);
+			ancla.innerHTML = texto;
+			// Si target existe agregale el atributo 0 = false
+			if (target) ancla.setAttribute('target', target);
+			ponerEnBody(ancla);
+		};
+
+		// Crea la parte thead de la table
+		/*
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Item Name</th>
+					<th>Item Price</th>
+				</tr>
+			</thead>
+		*/
+		const crearThead = titulos => {
+			let thead = crearHijo('thead');
+			let tr = crearHijo('tr');
+
+			// Recordar que el map itera por cada elemento que haya en el arreglo
+			titulos.map((valor, index) => {
+				let th = crearHijo('th');
+				th.innerHTML = valor;
+				tr.appendChild(th);
+			});
+
+			thead.appendChild(tr);
+
+			// Aqui se retorna un elemento en lugar de ponerlo en el body
+			return thead;
+		};
+
+		// Construye el tbody de la tabla
+		/*
+			<tbody>
+				<tr>
+					<td>Alvin</td>
+					<td>Eclair</td>
+					<td>$0.87</td>
+				</tr>
+				<tr>
+					<td>Alan</td>
+					<td>Jellybean</td>
+					<td>$3.76</td>
+				</tr>
+				<tr>
+					<td>Super Jonathan</td>
+					<td>Lollipop</td>
+					<td>$7.00</td>
+				</tr>
+			</tbody>
+		*/
+		const crearTbody = filas => {
+			let tbody = crearHijo('tbody');
+
+			// filas = arreglo de arreglos
+			// [ [], [], [] ]
+			// este primer map se usa para la creacion de los tr
+			filas.map((arreglo, index) => {
+				// Cada iteracion toma el valor de los indexes
+				// que en este caso filas[0] = []
+				let tr = crearHijo('tr');
+
+				// como filas[0], filas[1], filas[2], etc. son arreglos
+				// tambien se pueden iterar con el map
+				// este segundo map se usa para la creacion de los td dentro de tr
+				filas[index].map((valor, index) => {
+					let td = crearHijo('td');
+					td.innerHTML = valor;
+					tr.appendChild(td);
+				});
+
+				tbody.appendChild(tr);
+			});
+
+			// Aqui se retorna un elemento en lugar de ponerlo en el body
+			return tbody;
+		};
+
+		// Recibe el thead y tbody creados con las funciones pasadas y crea la tabla comprela
+		const crearTabla = (thead, tbody) => {
+			let table = crearHijo('table');
+			table.appendChild(thead);
+			table.appendChild(tbody);
+			ponerEnBody(table);
+		};
+
+		const body = document.querySelector('body');
+
+//=========================================================================
+//----> Todo el contenido esta en programacion funcional
+//----> Significa que todo lo que se usa es en base a funciones
+
+		haches('h1', 'Bienvenidos!');
+		haches('h2', 'A este curso');
+		haches('h3', 'Sobre HTML');
+
+		ponerHr();
+
+		listas('ul');
+		listas('ol');
+
+		ponerHr();
+
+		imagenes('https://www.rodentia.es/blog/wp-content/uploads/2015/09/C%C3%B3mo-Alimentar-a-un-Gato-Beb%C3%A9.jpg');
+
+		ponerHr();
+
+		anclas('Ir a Google', 'https://www.google.com/');
+		ponerBr();
+		anclas('Google en otra pestaña', 'https://www.google.com/', 'blank');
+
+		ponerHr();
+
+		// Se manda un arreglo con valores
+		const thead = crearThead( ['Name', 'Item Name', 'Price'] );
+
+		// Se manda un arreglo de arreglos = [ [], [], [] ]
+		const tbody = crearTbody([
+			['Alvin', 'Eclair', '$10.00'],
+			['Simon', 'Dfils', '$34.50'],
+			['Theodoro', 'Udlim', '$17.90']
+		]);
+
+		// Se mandan las constantes creadas arriba
+		crearTabla(thead, tbody);
+
+
+	</script>
+
+</body>
+</html>
